@@ -11,7 +11,7 @@
             class="bg-white/20 shadow-md rounded-lg overflow-hidden"
         >
             <img
-                :src="`${movieImages}`"
+                :src="`https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`"
                 :alt="movie.title"
                 class="w-full h-72 object-cover"
             />
@@ -27,7 +27,7 @@ import axios from "axios";
 import { onMounted, ref } from "vue";
 
 const movies = ref([]);
-const movieImages = ref([]);
+const movieImages = ref();
 
 const options = {
     method: "GET",
@@ -46,12 +46,13 @@ const loadMovieList = async () => {
         movies.value = res.data.results;
 
         let movie = [];
+        let movieId;
         for (movie in movies) {
-            return movie.id;
+            movieId = movie.id;
         }
 
         const resImg = await axios.get(
-            `https://api.themoviedb.org/3/movie/${movie}/images`,
+            `https://api.themoviedb.org/3/movie/${movieId}/images`,
             options
         );
         movieImages.value = resImg.data;
