@@ -1,5 +1,5 @@
 <template>
-    <h1 class="mt-5 text-3xl font-bold mb-6 text-center text-red-900">
+    <h1 class="p-5 mt-5 text-3xl font-bold mb-6 text-center text-red-900">
         Popular 🎬
     </h1>
     <div
@@ -10,7 +10,7 @@
             :key="movie.id"
             class="bg-white/20 shadow-md rounded-lg overflow-hidden"
         >
-            <RouterLink to="/details">
+            <RouterLink :to="'/details/' + movie.id">
                 <img
                     :src="`https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`"
                     :alt="movie.title"
@@ -36,7 +36,7 @@ const options = {
     method: "GET",
     headers: {
         accept: "application/json",
-        Authorization: import.meta.env.API_MOVIE_KEY,
+        Authorization: import.meta.env.VITE_API_MOVIE_KEY,
     },
 };
 
@@ -51,7 +51,6 @@ const loadMovieList = async () => {
         console.log(err);
     }
 };
-
 onMounted(loadMovieList);
 </script>
 
