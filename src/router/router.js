@@ -15,6 +15,9 @@ const routes = [
         name: "Details",
         component: Details,
     },
+];
+
+const notFoundRoute = [
     {
         path: "/404",
         name: "404",
