@@ -2,7 +2,7 @@
     <div>
         <RouterLink to="/">
             <h2 class="text-center mt-10 mb-20 text-red-900 text-3xl font-bold">
-                Get back
+                Voltar
             </h2>
         </RouterLink>
     </div>
@@ -19,17 +19,24 @@
             Release: {{ movies.release_date }}
         </p>
         <p class="pb-4 mb-2 text-center">{{ movies.overview }}</p>
-        <p v-if="providers.length > 0" class="text-lg font-bold">You cant watch on:</p>
-        <p v-else="providers.length === 0">Not available to watch yet.</p>
+        <p v-if="providers.length > 0" class="text-lg font-bold">
+            Você pode assistir em:
+        </p>
+        <p v-else="providers.length === 0">Não disponível para assistir (stramings).</p>
         <div v-for="provider in providers" class="text-center">
             <p>
-                <img :src="`https://image.tmdb.org/t/p/original/${provider.logo_path}`" alt="" class="m-auto p-5">
+                <img
+                    :src="`https://image.tmdb.org/t/p/original/${provider.logo_path}`"
+                    alt=""
+                    class="m-auto p-5"
+                />
                 {{ provider.provider_name }}
-            </p> 
+            </p>
         </div>
     </div>
+
     <h2 class="text-center mt-20 mb-20 text-red-900 text-3xl font-bold">
-        Similars
+        Recomendados:
     </h2>
     <div
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
@@ -63,6 +70,9 @@ const route = useRoute();
 const movies = ref([]);
 const similars = ref([]);
 const providers = ref([]);
+const movieCache = ref({});
+const similarsCache = ref({});
+const providersCache = ref({});
 
 const options = {
     method: "GET",
@@ -73,36 +83,54 @@ const options = {
 };
 
 const loadMovieDetails = async () => {
+    const id = route.params.id;
+    if (movieCache.value[id]) {
+        movies.value = movieCache.value[id];
+        return;
+    }
     try {
         const res = await axios.get(
-            `https://api.themoviedb.org/3/movie/${route.params.id}`,
+            `https://api.themoviedb.org/3/movie/${id}?language=pt-BR`,
             options
         );
         movies.value = res.data;
+        movieCache.value[id] = res.data;
     } catch (err) {
         console.log(err);
     }
 };
 
 const getSimilars = async () => {
+    const id = route.params.id;
+    if (similarsCache.value[id]) {
+        similars.value = similarsCache.value[id];
+        return;
+    }
     try {
         const res = await axios.get(
-            `https://api.themoviedb.org/3/movie/${route.params.id}/similar?language=en-US&page=1`,
+            `https://api.themoviedb.org/3/movie/${id}/similar?language=en-US&page=1`,
             options
         );
         similars.value = res.data.results;
+        similarsCache.value[id] = res.data.results;
     } catch (err) {
         console.log(err);
     }
 };
 
 const getWatchProviders = async () => {
+    const id = route.params.id;
+    if (providersCache.value[id]) {
+        providers.value = providersCache.value[id];
+        return;
+    }
     try {
         const res = await axios.get(
-            `https://api.themoviedb.org/3/movie/${route.params.id}/watch/providers`,
+            `https://api.themoviedb.org/3/movie/${id}/watch/providers`,
             options
         );
-        providers.value = res.data.results.BR.flatrate;
+        providers.value = res.data.results.BR.flatrate || [];
+        providersCache.value[id] = providers.value;
     } catch (err) {
         console.log(err);
     }
