@@ -108,7 +108,7 @@ const getSimilars = async () => {
     }
     try {
         const res = await axios.get(
-            `https://api.themoviedb.org/3/movie/${id}/similar?language=en-US&page=1`,
+            `https://api.themoviedb.org/3/movie/${id}/similar?language=pt-BR-US&page=1`,
             options
         );
         similars.value = res.data.results;

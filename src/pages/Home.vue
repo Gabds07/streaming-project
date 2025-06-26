@@ -43,7 +43,7 @@ const options = {
 const loadMovieList = async () => {
     try {
         const res = await axios.get(
-            "https://api.themoviedb.org/3/movie/popular",
+            "https://api.themoviedb.org/3/movie/popular?language=pt-BR",
             options
         );
         movies.value = res.data.results;
